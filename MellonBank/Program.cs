@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MellonBank.Areas.Identity.Data;
-
-namespace MellonBank 
+namespace MellonBank
 {
     public class Program
     {
@@ -13,15 +12,22 @@ namespace MellonBank
 
             builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(connectionString));
 
-            builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDBContext>();
+            builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<AppDBContext>();
+
+            builder.Services.AddRazorPages();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            // Add razor pages
-            builder.Services.AddRazorPages();
-
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                await Seed(services);
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -36,17 +42,28 @@ namespace MellonBank
 
             app.UseAuthorization();
 
-            app.MapRazorPages();
-
             app.MapStaticAssets();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
-
-
+            app.MapRazorPages()
+                .WithStaticAssets();
             app.Run();
+        }
+
+        public static async Task Seed(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            if (!await roleManager.RoleExistsAsync("Staff"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Staff"));
+            }
+            if (!await roleManager.RoleExistsAsync("Customer"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Customer"));
+            }
+
         }
     }
 }
