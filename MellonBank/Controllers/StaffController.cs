@@ -16,6 +16,7 @@ using Microsoft.Build.Framework;
 
 namespace MellonBank.Controllers
 {
+    [Authorize(Roles = "Staff")]
     public class StaffController : Controller
     {
         private readonly AppDBContext _context;

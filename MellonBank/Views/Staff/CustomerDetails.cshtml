@@ -1,0 +1,66 @@
+﻿@model MellonBank.Areas.Identity.Data.AppUser
+
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<h1>Customer Details</h1>
+
+<div>
+    <h4>Customer</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
+        <dt class="col-sm-2">Last Name</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.LastName)</dd>
+        <dt class="col-sm-2">AFM</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.AFM)</dd>
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Email)</dd>
+        <dt class="col-sm-2">Phone</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.PhoneNumber)</dd>
+        <dt class="col-sm-2">Address</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Address)</dd>
+    </dl>
+</div>
+
+<h4>Accounts</h4>
+@if (Model.accounts != null && Model.accounts.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Account Number</th>
+                <th>Balance (EUR)</th>
+                <th>Branch</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.accounts)
+            {
+                <tr>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.Balance</td>
+                    <td>@account.Branch</td>
+                    <td>@account.Type</td>
+                    <td>
+                        <a asp-action="EditAccount" asp-route-accountNumber="@account.AccountNumber">Edit</a> |
+                        <a asp-action="DeleteAccount" asp-route-accountNumber="@account.AccountNumber">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No accounts found for this customer.</p>
+}
+
+<div>
+    <a asp-action="EditCustomer" asp-route-afm="@Model.AFM">Edit</a> |
+    <a asp-action="Customers">Back to Customers</a>
+</div>

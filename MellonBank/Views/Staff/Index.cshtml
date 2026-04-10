@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Staff Panel";
+}
+
+<h1>Staff Panel</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Customer Management</h4>
+        <p>
+            <a asp-action="Customers" class="btn btn-primary">View All Customers</a>
+        </p>
+        <p>
+            <a asp-action="CreateCustomer" class="btn btn-success">Add Customer</a>
+        </p>
+        <p>
+            <a asp-action="FindCustomer" class="btn btn-info">Find Customer by AFM</a>
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h4>Account Management</h4>
+        <p>
+            <a asp-action="CreateAccount" class="btn btn-success">Add Account</a>
+        </p>
+    </div>
+</div>

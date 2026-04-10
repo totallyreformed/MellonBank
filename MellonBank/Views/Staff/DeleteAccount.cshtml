@@ -1,0 +1,31 @@
+﻿@model MellonBank.Areas.Identity.Data.Account
+
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<h1>Delete Account</h1>
+
+<h3>Are you sure you want to delete this account?</h3>
+<div>
+    <h4>Account</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Account Number</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.AccountNumber)</dd>
+        <dt class="col-sm-2">Balance (EUR)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Balance)</dd>
+        <dt class="col-sm-2">Branch</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Branch)</dd>
+        <dt class="col-sm-2">Type</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Type)</dd>
+        <dt class="col-sm-2">Customer</dt>
+        <dd class="col-sm-10">@Model.User.Name @Model.User.LastName (@Model.User.AFM)</dd>
+    </dl>
+
+    <form asp-action="DeleteAccount" asp-route-accountNumber="@Model.AccountNumber">
+        <input type="hidden" name="accountNumber" value="@Model.AccountNumber" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Customers">Back to Customers</a>
+    </form>
+</div>
