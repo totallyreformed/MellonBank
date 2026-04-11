@@ -33,6 +33,12 @@ An e-banking management platform built with ASP.NET Core MVC (.NET 10.0) as part
 - Registration with role selection and full profile fields (Name, Last Name, Address, Phone, Email, AFM)
 - Login / Logout with Identity Razor Pages
 
+### Currency API (Optional)
+- REST API endpoint at `GET /api/Currency/GetRates`
+- Serves MellonBank's exchange rates (EUR to AUD, CHF, GBP, USD) from the database
+- Accessible to any user without authentication
+- Exchange rates seeded on application startup
+
 ## Project Structure
 
 ```
@@ -42,7 +48,8 @@ MellonBank/
 │   │   ├── AppUser.cs              # Custom IdentityUser (Name, LastName, Address, AFM)
 │   │   ├── Account.cs              # Bank account model
 │   │   ├── AccountType.cs          # Enum (Checking, Savings)
-│   │   └── AppDBContext.cs         # IdentityDbContext with Accounts DbSet
+│   │   ├── Currency.cs             # Currency exchange rates model (AUD, CHF, GBP, USD)
+│   │   └── AppDBContext.cs         # IdentityDbContext with Accounts and Currencies DbSets
 │   └── Pages/Account/
 │       ├── Register.cshtml/.cs     # Registration with role selection
 │       ├── Login.cshtml/.cs        # Login page
@@ -50,7 +57,8 @@ MellonBank/
 ├── Controllers/
 │   ├── HomeController.cs           # Home and Privacy pages
 │   ├── StaffController.cs          # Staff admin panel (Authorize: Staff)
-│   └── CustomerController.cs       # Customer portal (Authorize: Customer)
+│   ├── CustomerController.cs       # Customer portal (Authorize: Customer)
+│   └── CurrencyController.cs      # REST API endpoint (no auth required)
 ├── ViewModels/
 │   ├── CustomerViewModel.cs        # Create customer form
 │   ├── EditCustomerViewModel.cs    # Edit customer form
@@ -65,7 +73,7 @@ MellonBank/
 │   ├── Customer/                   # 6 views for customer operations
 │   ├── Home/                       # Index, Privacy
 │   └── Shared/                     # _Layout, _LoginPartial, Error
-├── Program.cs                      # App configuration, DI, role seeding
+├── Program.cs                      # App configuration, DI, role and currency seeding
 └── appsettings.json                # Connection string, Fixer API key
 ```
 
@@ -114,3 +122,4 @@ MellonBank/
 - **AspNetUsers** — Stores user data (Name, LastName, Address, Phone, Email, AFM, credentials) via ASP.NET Core Identity
 - **AspNetRoles** — Stores roles (Staff, Customer), seeded on startup
 - **Accounts** — Stores bank accounts (AccountNumber, Balance, Branch, Type) with FK to AspNetUsers
+- **Currencies** — Stores exchange rates (AUD, CHF, GBP, USD) for EUR conversion, seeded on startup
