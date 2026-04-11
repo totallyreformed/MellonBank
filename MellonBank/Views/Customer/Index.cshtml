@@ -1,0 +1,48 @@
+﻿@model IEnumerable<MellonBank.Areas.Identity.Data.Account>
+
+@{
+    ViewData["Title"] = "My Accounts";
+}
+
+<h1>My Accounts</h1>
+<hr />
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Account Number</th>
+                <th>Balance (EUR)</th>
+                <th>Branch</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.AccountNumber)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Balance)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Branch)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                    <td>
+                        <a asp-action="AccountDetails" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Balance" asp-route-id="@item.Id">Balance</a> |
+                        <a asp-action="Deposit" asp-route-id="@item.Id">Deposit</a> |
+                        <a asp-action="Transfer" asp-route-id="@item.Id">Transfer</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>You do not have any accounts yet.</p>
+}
+
+<div>
+    <a asp-action="ChangePassword">Change Password</a>
+</div>

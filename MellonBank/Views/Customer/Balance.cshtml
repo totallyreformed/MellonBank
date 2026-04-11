@@ -1,0 +1,32 @@
+﻿@model MellonBank.Areas.Identity.Data.Account
+
+@{
+    ViewData["Title"] = "Account Balance";
+}
+
+<h1>Account Balance</h1>
+
+<h4>Account: @ViewBag.AccountNumber</h4>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Balance in EUR</dt>
+    <dd class="col-sm-9">@ViewBag.BalanceEur EUR</dd>
+
+    <dt class="col-sm-3">Balance in USD</dt>
+    <dd class="col-sm-9">
+        @if (ViewBag.BalanceUsd != null)
+        {
+            @($"{ViewBag.BalanceUsd:F2} USD")
+        }
+        else
+        {
+            <span class="text-danger">@(ViewBag.ErrorMessage ?? "Exchange rate unavailable.")</span>
+        }
+    </dd>
+</dl>
+
+<div>
+    <a asp-action="AccountDetails" asp-route-id="@Model.Id">Back to Account Details</a> |
+    <a asp-action="Index">Back to My Accounts</a>
+</div>

@@ -1,0 +1,41 @@
+﻿@model MellonBank.ViewModels.TransferViewModel
+
+@{
+    ViewData["Title"] = "Transfer";
+}
+
+<h1>Transfer to Third Party</h1>
+
+<h4>Account: @ViewBag.AccountNumber</h4>
+<p>Current Balance: @ViewBag.CurrentBalance EUR</p>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Transfer" asp-route-id="@ViewBag.AccountId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DestinationAccountNumber" class="control-label"></label>
+                <input asp-for="DestinationAccountNumber" class="form-control" />
+                <span asp-validation-for="DestinationAccountNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Transfer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to My Accounts</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
