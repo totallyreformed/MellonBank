@@ -20,11 +20,13 @@ namespace MellonBank.Controllers
     {
         private readonly AppDBContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public CustomerController(AppDBContext context, UserManager<AppUser> userManager)
+        public CustomerController(AppDBContext context, UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         // GET: Customer
@@ -85,7 +87,8 @@ namespace MellonBank.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetAsync("https://data.fixer.io/api/latest?access_key=YOUR_API_KEY&base=EUR&symbols=USD");
+                    var apiKey = _configuration["FixerApi:ApiKey"];
+                    var response = await httpClient.GetAsync($"https://data.fixer.io/api/latest?access_key={apiKey}&base=EUR&symbols=USD");
 
                     if (response.IsSuccessStatusCode)
                     {
