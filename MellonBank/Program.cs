@@ -64,6 +64,19 @@ namespace MellonBank
                 await roleManager.CreateAsync(new IdentityRole("Customer"));
             }
 
+            var context = serviceProvider.GetRequiredService<AppDBContext>();
+            if (!context.Currencies.Any())
+            {
+                context.Currencies.Add(new Currency
+                {
+                    AUD = 1.63m,
+                    CHF = 0.94m,
+                    GBP = 0.86m,
+                    USD = 1.08m
+                });
+                await context.SaveChangesAsync();
+            }
+
         }
     }
 }

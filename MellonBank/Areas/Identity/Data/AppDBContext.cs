@@ -13,6 +13,7 @@ public class AppDBContext : IdentityDbContext<AppUser>
     }
 
     public DbSet<Account> Accounts { get; set; }
+    public DbSet<Currency> Currencies { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
