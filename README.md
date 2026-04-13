@@ -74,7 +74,9 @@ MellonBank/
 │   ├── Home/                       # Index, Privacy
 │   └── Shared/                     # _Layout, _LoginPartial, Error
 ├── Program.cs                      # App configuration, DI, role and currency seeding
-└── appsettings.json                # Connection string, Fixer API key
+├── appsettings.json                # Connection string, Fixer API key
+└── test-cases.md                   # Edge cases that have been tested
+
 ```
 
 ## Prerequisites
