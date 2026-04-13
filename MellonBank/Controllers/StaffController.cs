@@ -1,5 +1,4 @@
-﻿using NuGet.Protocol.Plugins;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,9 +9,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MellonBank.Areas.Identity.Data;
 using MellonBank.ViewModels;
-using System.Security.Principal;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Build.Framework;
 
 namespace MellonBank.Controllers
 {
@@ -34,34 +30,33 @@ namespace MellonBank.Controllers
             return View();
         }
 
-        // Customer Operations
+        // ==================== CUSTOMER OPERATIONS ====================
 
-        // GET: Staff / Customers
+        // GET: Staff/Customers
         public async Task<IActionResult> Customers()
         {
             var users = await _userManager.GetUsersInRoleAsync("Customer");
             return View(users);
         }
 
-        // GET: Staff / FindCustomer
-        public async Task<IActionResult> FindCustomer()
+        // GET: Staff/FindCustomer
+        public IActionResult FindCustomer()
         {
             return View();
         }
 
-        // POST: Staff / FindCustomer
+        // POST: Staff/FindCustomer
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> FindCustomer(string afm)
         {
             if (string.IsNullOrEmpty(afm))
             {
-                ModelState.AddModelError(string.Empty, "AFM is required.");
+                ModelState.AddModelError(string.Empty, "Please enter an AFM.");
                 return View();
             }
 
             var customer = await _context.Users.FirstOrDefaultAsync(u => u.AFM == afm);
-
             if (customer == null)
             {
                 ModelState.AddModelError(string.Empty, "Customer not found.");
@@ -71,7 +66,7 @@ namespace MellonBank.Controllers
             return RedirectToAction(nameof(CustomerDetails), new { afm = afm });
         }
 
-        // GET: Staff / CustomerDetails
+        // GET: Staff/CustomerDetails
         public async Task<IActionResult> CustomerDetails(string afm)
         {
             if (string.IsNullOrEmpty(afm))
@@ -82,7 +77,6 @@ namespace MellonBank.Controllers
             var customer = await _context.Users
                 .Include(u => u.accounts)
                 .FirstOrDefaultAsync(u => u.AFM == afm);
-
             if (customer == null)
             {
                 return NotFound();
@@ -91,13 +85,13 @@ namespace MellonBank.Controllers
             return View(customer);
         }
 
-        // GET: Staff / CreateCustomer
+        // GET: Staff/CreateCustomer
         public IActionResult CreateCustomer()
         {
             return View();
         }
 
-        // POST: Staff / CreateCustomer
+        // POST: Staff/CreateCustomer
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCustomer(CustomerViewModel model)
@@ -108,10 +102,10 @@ namespace MellonBank.Controllers
                 {
                     Name = model.Name,
                     LastName = model.LastName,
-                    UserName = model.UserName,
-                    Email = model.Email,
                     Address = model.Address,
                     PhoneNumber = model.Phone,
+                    Email = model.Email,
+                    UserName = model.Email,
                     AFM = model.AFM
                 };
 
@@ -119,21 +113,21 @@ namespace MellonBank.Controllers
 
                 if (result.Succeeded)
                 {
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await _userManager.ConfirmEmailAsync(user, token);
                     await _userManager.AddToRoleAsync(user, "Customer");
                     return RedirectToAction(nameof(Customers));
                 }
-                else
+
+                foreach (var error in result.Errors)
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
             return View(model);
         }
 
-        // GET : Staff / EditCustomer
+        // GET: Staff/EditCustomer
         public async Task<IActionResult> EditCustomer(string afm)
         {
             if (string.IsNullOrEmpty(afm))
@@ -151,16 +145,16 @@ namespace MellonBank.Controllers
             {
                 Name = customer.Name,
                 LastName = customer.LastName,
-                Email = customer.Email,
                 Address = customer.Address,
                 Phone = customer.PhoneNumber,
+                Email = customer.Email,
                 AFM = customer.AFM
             };
 
             return View(model);
         }
 
-        // POST : Staff / EditCustomer
+        // POST: Staff/EditCustomer
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCustomer(string afm, EditCustomerViewModel model)
@@ -168,7 +162,6 @@ namespace MellonBank.Controllers
             if (ModelState.IsValid)
             {
                 var customer = await _context.Users.FirstOrDefaultAsync(u => u.AFM == afm);
-
                 if (customer == null)
                 {
                     return NotFound();
@@ -189,7 +182,7 @@ namespace MellonBank.Controllers
             return View(model);
         }
 
-        // GET: Staff / DeleteCustomer
+        // GET: Staff/DeleteCustomer
         public async Task<IActionResult> DeleteCustomer(string afm)
         {
             if (string.IsNullOrEmpty(afm))
@@ -200,7 +193,6 @@ namespace MellonBank.Controllers
             var customer = await _context.Users
                 .Include(u => u.accounts)
                 .FirstOrDefaultAsync(u => u.AFM == afm);
-
             if (customer == null)
             {
                 return NotFound();
@@ -209,7 +201,7 @@ namespace MellonBank.Controllers
             return View(customer);
         }
 
-        // POST: Staff / DeleteCustomer
+        // POST: Staff/DeleteCustomer
         [HttpPost, ActionName("DeleteCustomer")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCustomerConfirmed(string afm)
@@ -217,7 +209,6 @@ namespace MellonBank.Controllers
             var customer = await _context.Users
                 .Include(u => u.accounts)
                 .FirstOrDefaultAsync(u => u.AFM == afm);
-
             if (customer != null)
             {
                 _context.Accounts.RemoveRange(customer.accounts);
@@ -228,16 +219,15 @@ namespace MellonBank.Controllers
             return RedirectToAction(nameof(Customers));
         }
 
+        // ==================== ACCOUNT OPERATIONS ====================
 
-        // Account Operations
-
-        // GET: Staff / CreateAccount
+        // GET: Staff/CreateAccount
         public IActionResult CreateAccount()
         {
             return View();
         }
 
-        // POST: Staff / CreateAccount
+        // POST: Staff/CreateAccount
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAccount(AccountViewModel model)
@@ -247,7 +237,7 @@ namespace MellonBank.Controllers
                 var customer = await _context.Users.FirstOrDefaultAsync(u => u.AFM == model.CustomerAFM);
                 if (customer == null)
                 {
-                    ModelState.AddModelError("Customer AFM", "Customer with this AFM not found");
+                    ModelState.AddModelError("CustomerAFM", "Customer with this AFM not found.");
                     return View(model);
                 }
 
@@ -267,7 +257,7 @@ namespace MellonBank.Controllers
             return View(model);
         }
 
-        // GET: Staff / EditAccount
+        // GET: Staff/EditAccount
         public async Task<IActionResult> EditAccount(string accountNumber)
         {
             if (string.IsNullOrEmpty(accountNumber))
@@ -278,7 +268,6 @@ namespace MellonBank.Controllers
             var account = await _context.Accounts
                 .Include(a => a.User)
                 .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
-
             if (account == null)
             {
                 return NotFound();
@@ -296,7 +285,7 @@ namespace MellonBank.Controllers
             return View(model);
         }
 
-        // POST: Staff / EditAccount
+        // POST: Staff/EditAccount
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAccount(string accountNumber, AccountViewModel model)
@@ -306,7 +295,6 @@ namespace MellonBank.Controllers
                 var account = await _context.Accounts
                     .Include(a => a.User)
                     .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
-
                 if (account == null)
                 {
                     return NotFound();
@@ -322,11 +310,10 @@ namespace MellonBank.Controllers
 
                 return RedirectToAction(nameof(Customers));
             }
-
             return View(model);
         }
 
-        // GET: Staff / DeleteAccount
+        // GET: Staff/DeleteAccount
         public async Task<IActionResult> DeleteAccount(string accountNumber)
         {
             if (string.IsNullOrEmpty(accountNumber))
@@ -337,7 +324,6 @@ namespace MellonBank.Controllers
             var account = await _context.Accounts
                 .Include(a => a.User)
                 .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
-
             if (account == null)
             {
                 return NotFound();
@@ -346,13 +332,12 @@ namespace MellonBank.Controllers
             return View(account);
         }
 
-        // POST: Staff / DeleteAccount
+        // POST: Staff/DeleteAccount
         [HttpPost, ActionName("DeleteAccount")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAccountConfirmed(string accountNumber)
         {
             var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
-
             if (account != null)
             {
                 _context.Accounts.Remove(account);
