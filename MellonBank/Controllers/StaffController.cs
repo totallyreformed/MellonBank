@@ -98,6 +98,27 @@ namespace MellonBank.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingAfm = await _context.Users.FirstOrDefaultAsync(u => u.AFM == model.AFM);
+                if (existingAfm != null)
+                {
+                    ModelState.AddModelError("AFM", "A customer with this AFM already exists.");
+                    return View(model);
+                }
+
+                var existingEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError("Email", "A user with this email already exists.");
+                    return View(model);
+                }
+
+                var existingPhone = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.Phone);
+                if (existingPhone != null)
+                {
+                    ModelState.AddModelError("Phone", "A user with this phone number already exists.");
+                    return View(model);
+                }
+
                 var user = new AppUser
                 {
                     Name = model.Name,
@@ -165,6 +186,36 @@ namespace MellonBank.Controllers
                 if (customer == null)
                 {
                     return NotFound();
+                }
+
+                if (model.AFM != afm)
+                {
+                    var existingAfm = await _context.Users.FirstOrDefaultAsync(u => u.AFM == model.AFM);
+                    if (existingAfm != null)
+                    {
+                        ModelState.AddModelError("AFM", "A customer with this AFM already exists.");
+                        return View(model);
+                    }
+                }
+
+                if (model.Email != customer.Email)
+                {
+                    var existingEmail = await _userManager.FindByEmailAsync(model.Email);
+                    if (existingEmail != null)
+                    {
+                        ModelState.AddModelError("Email", "A user with this email already exists.");
+                        return View(model);
+                    }
+                }
+
+                if (model.Phone != customer.PhoneNumber)
+                {
+                    var existingPhone = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.Phone);
+                    if (existingPhone != null)
+                    {
+                        ModelState.AddModelError("Phone", "A user with this phone number already exists.");
+                        return View(model);
+                    }
                 }
 
                 customer.Name = model.Name;
@@ -241,6 +292,13 @@ namespace MellonBank.Controllers
                     return View(model);
                 }
 
+                var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == model.AccountNumber);
+                if (existingAccount != null)
+                {
+                    ModelState.AddModelError("AccountNumber", "An account with this number already exists.");
+                    return View(model);
+                }
+
                 var account = new Account
                 {
                     Balance = model.Balance,
@@ -298,6 +356,16 @@ namespace MellonBank.Controllers
                 if (account == null)
                 {
                     return NotFound();
+                }
+
+                if (model.AccountNumber != accountNumber)
+                {
+                    var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == model.AccountNumber);
+                    if (existingAccount != null)
+                    {
+                        ModelState.AddModelError("AccountNumber", "An account with this number already exists.");
+                        return View(model);
+                    }
                 }
 
                 account.Balance = model.Balance;

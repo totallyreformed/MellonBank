@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace MellonBank.Areas.Identity.Pages.Account
@@ -32,6 +33,7 @@ namespace MellonBank.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly AppDBContext _context;
 
         public RegisterModel(
             RoleManager<IdentityRole> roleManager,
@@ -39,7 +41,8 @@ namespace MellonBank.Areas.Identity.Pages.Account
             IUserStore<AppUser> userStore,
             SignInManager<AppUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            AppDBContext context)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -48,6 +51,7 @@ namespace MellonBank.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -128,6 +132,22 @@ namespace MellonBank.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                var existingAfm = await _context.Users.FirstOrDefaultAsync(u => u.AFM == Input.AFM);
+                if (existingAfm != null)
+                {
+                    ModelState.AddModelError(string.Empty, "A user with this AFM already exists.");
+                    Roles = _roleManager.Roles.Select(x => new SelectListItem { Text = x.Name, Value = x.Name }).ToList();
+                    return Page();
+                }
+
+                var existingPhone = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == Input.Phone);
+                if (existingPhone != null)
+                {
+                    ModelState.AddModelError(string.Empty, "A user with this phone number already exists.");
+                    Roles = _roleManager.Roles.Select(x => new SelectListItem { Text = x.Name, Value = x.Name }).ToList();
+                    return Page();
+                }
+
                 var user = CreateUser();
 
                 user.Name = Input.Name;
