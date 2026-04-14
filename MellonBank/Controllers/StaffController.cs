@@ -222,8 +222,11 @@ namespace MellonBank.Controllers
                 customer.LastName = model.LastName;
                 customer.Address = model.Address;
                 customer.PhoneNumber = model.Phone;
-                customer.Email = model.Email;
                 customer.AFM = model.AFM;
+
+                await _userManager.SetEmailAsync(customer, model.Email);
+                await _userManager.SetUserNameAsync(customer, model.Email);
+                await _userManager.UpdateAsync(customer);
 
                 _context.Update(customer);
                 await _context.SaveChangesAsync();
