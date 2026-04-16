@@ -83,10 +83,12 @@ namespace MellonBank.Controllers
             decimal? balanceUsd = null;
             string errorMessage = null;
 
+            // Display Balance in USD through Fixer.io API
             try
             {
                 using (var httpClient = new HttpClient())
                 {
+                    // API key lives inside appsettings.json
                     var apiKey = _configuration["FixerApi:ApiKey"];
                     var response = await httpClient.GetAsync($"https://data.fixer.io/api/latest?access_key={apiKey}&base=EUR&symbols=USD");
 
