@@ -2,7 +2,75 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Welcome to MellonBank</h1>
+    <p class="lead">Your trusted partner for digital banking and financial management.</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>About MellonBank</h2>
+        <p>
+            MellonBank is an e-banking platform that provides secure account management for customers
+            and a comprehensive administration portal for bank staff. Whether you are managing your
+            personal accounts or overseeing the operations of the entire branch, MellonBank offers
+            the tools you need to get the job done.
+        </p>
+    </div>
+</div>
+
+<hr />
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h3>For Customers</h3>
+        <ul>
+            <li><strong>View Your Accounts</strong> — See all your accounts at a glance.</li>
+            <li><strong>Check Balance</strong> — View balances in both EUR and USD with live exchange rates.</li>
+            <li><strong>Deposit Funds</strong> — Add money to your own account.</li>
+            <li><strong>Transfer Funds</strong> — Send money to third-party accounts with real-time balance validation.</li>
+            <li><strong>Account Details</strong> — Review your account number, branch, and type.</li>
+            <li><strong>Change Password</strong> — Update your security credentials at any time.</li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h3>For Staff</h3>
+        <ul>
+            <li><strong>Manage Customers</strong> — Add, edit, or remove customer records by AFM.</li>
+            <li><strong>Manage Accounts</strong> — Create and maintain bank accounts for customers by account number.</li>
+            <li><strong>Search Customers</strong> — Quickly find any customer by their AFM.</li>
+            <li><strong>View All Customers</strong> — Browse the full list of registered clients.</li>
+            <li><strong>Full CRUD Access</strong> — Complete control over customer and account data.</li>
+        </ul>
+    </div>
+</div>
+
+<hr />
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h3>Public API</h3>
+        <p>
+            MellonBank also exposes a public API that provides the latest exchange rates used by the bank.
+            Any user, authenticated or not, can query this endpoint to retrieve conversion rates for EUR
+            to Australian Dollar, Swiss Franc, British Pound, and US Dollar.
+        </p>
+        <p>
+            <a asp-controller="Currency" asp-action="GetRates" class="btn btn-outline-primary">View Exchange Rates (JSON)</a>
+        </p>
+    </div>
+</div>
+
+<hr />
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h3>Security &amp; Authentication</h3>
+        <p>
+            MellonBank uses ASP.NET Core Identity for secure authentication and role-based authorization.
+            Customer and Staff accounts are strictly separated, with each role accessing only the
+            functionality appropriate to their position. All sensitive operations require authentication,
+            and user passwords are never stored in plain text.
+        </p>
+    </div>
 </div>
