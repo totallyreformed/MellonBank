@@ -12,6 +12,10 @@
 | Deposit a negative amount | Validation rejects it | Pass |
 | Transfer a negative amount | Validation rejects it | Pass |
 | Decimal precision edge case (0.009999999999999999999) | Rounded to 0.01 by SQL Server decimal(18,2) | Pass |
+| Deposit extreme value (99999999999999999.99) | Validation error: amount exceeds maximum | Pass |
+| Transfer extreme value (99999999999999999.99) | Validation error: amount exceeds maximum | Pass |
+| Deposit that would push balance over decimal max | Error: "deposit would exceed maximum allowed balance" | Pass |
+| Transfer that would push destination over decimal max | Error: "transfer would exceed destination maximum balance" | Pass |
 
 ## Customer Portal — Balance
 
@@ -40,7 +44,10 @@
 |---|---|---|
 | Create account with duplicate account number | Error: "An account with this number already exists" | Pass |
 | Create account with non-existent customer AFM | Error: "Customer with this AFM not found" | Pass |
+| Create account with negative balance | Validation error: balance must be 0 or greater | Pass |
 | Edit account number to one that already exists | Error: "An account with this number already exists" | Pass |
+| Edit account balance to negative | Validation error: balance must be 0 or greater | Pass |
+| Edit account number — verify originator gets renamed (not destination overwritten) | Original account renamed correctly, no other account affected | Pass |
 | Edit account and change nothing | Saves without errors | Pass |
 
 ## Authorization — URL Manipulation
