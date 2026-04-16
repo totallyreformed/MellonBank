@@ -108,7 +108,7 @@ namespace MellonBank.Controllers
             }
             catch
             {
-                errorMessage = "Could not retrieve exchange rate";
+                errorMessage = "Could not retrieve exchange rate.";
             }
 
             ViewBag.BalanceEur = balanceEur;
@@ -159,6 +159,15 @@ namespace MellonBank.Controllers
 
             if (ModelState.IsValid)
             {
+                if (account.Balance + model.Amount > 9999999999999999.99m)
+                {
+                    ModelState.AddModelError("Amount", "This deposit would exceed the maximum allowed balance.");
+                    ViewBag.AccountId = account.Id;
+                    ViewBag.AccountNumber = account.AccountNumber;
+                    ViewBag.CurrentBalance = account.Balance;
+                    return View(model);
+                }
+
                 account.Balance += model.Amount;
                 _context.Update(account);
                 await _context.SaveChangesAsync();
@@ -230,7 +239,15 @@ namespace MellonBank.Controllers
                     ViewBag.AccountId = account.Id;
                     ViewBag.AccountNumber = account.AccountNumber;
                     ViewBag.CurrentBalance = account.Balance;
+                    return View(model);
+                }
 
+                if (destinationAccount.Balance + model.Amount > 9999999999999999.99m)
+                {
+                    ModelState.AddModelError("Amount", "This transfer would exceed the destination account's maximum allowed balance.");
+                    ViewBag.AccountId = account.Id;
+                    ViewBag.AccountNumber = account.AccountNumber;
+                    ViewBag.CurrentBalance = account.Balance;
                     return View(model);
                 }
 

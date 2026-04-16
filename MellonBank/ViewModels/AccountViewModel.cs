@@ -10,6 +10,7 @@ namespace MellonBank.ViewModels
         public string CustomerAFM { get; set; }
 
         [Required(ErrorMessage = "Balance is Required")]
+        [Range(typeof(decimal), "0", "9999999999999999.99", ErrorMessage = "Balance must be between 0 and 9,999,999,999,999,999.99")]
         [Display(Name = "Balance (EUR)")]
         public decimal Balance { get; set; }
 

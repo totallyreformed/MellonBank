@@ -172,23 +172,25 @@ namespace MellonBank.Controllers
                 AFM = customer.AFM
             };
 
+            ViewBag.OriginalAfm = customer.AFM;
             return View(model);
         }
 
         // POST: Staff/EditCustomer
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCustomer(string afm, EditCustomerViewModel model)
+        public async Task<IActionResult> EditCustomer(string originalAfm, EditCustomerViewModel model)
         {
+            ViewBag.OriginalAfm = originalAfm;
             if (ModelState.IsValid)
             {
-                var customer = await _context.Users.FirstOrDefaultAsync(u => u.AFM == afm);
+                var customer = await _context.Users.FirstOrDefaultAsync(u => u.AFM == originalAfm);
                 if (customer == null)
                 {
                     return NotFound();
                 }
 
-                if (model.AFM != afm)
+                if (model.AFM != originalAfm)
                 {
                     var existingAfm = await _context.Users.FirstOrDefaultAsync(u => u.AFM == model.AFM);
                     if (existingAfm != null)
@@ -343,25 +345,27 @@ namespace MellonBank.Controllers
                 Type = account.Type
             };
 
+            ViewBag.OriginalAccountNumber = account.AccountNumber;
             return View(model);
         }
 
         // POST: Staff/EditAccount
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAccount(string accountNumber, AccountViewModel model)
+        public async Task<IActionResult> EditAccount(string originalAccountNumber, AccountViewModel model)
         {
+            ViewBag.OriginalAccountNumber = originalAccountNumber;
             if (ModelState.IsValid)
             {
                 var account = await _context.Accounts
                     .Include(a => a.User)
-                    .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+                    .FirstOrDefaultAsync(a => a.AccountNumber == originalAccountNumber);
                 if (account == null)
                 {
                     return NotFound();
                 }
 
-                if (model.AccountNumber != accountNumber)
+                if (model.AccountNumber != originalAccountNumber)
                 {
                     var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == model.AccountNumber);
                     if (existingAccount != null)
