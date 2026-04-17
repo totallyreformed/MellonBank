@@ -49,14 +49,15 @@
 
 <div class="row mb-4">
     <div class="col-12">
-        <h3>Public API</h3>
+        <h3>Exchange Rates</h3>
         <p>
-            MellonBank also exposes a public API that provides the latest exchange rates used by the bank.
-            Any user, authenticated or not, can query this endpoint to retrieve conversion rates for EUR
-            to Australian Dollar, Swiss Franc, British Pound, and US Dollar.
+            MellonBank provides exchange rates for EUR to Australian Dollar, Swiss Franc, British Pound,
+            and US Dollar. View the rates and use the built-in currency converter, or access the raw data
+            through the public API endpoint.
         </p>
         <p>
-            <a asp-controller="Currency" asp-action="GetRates" class="btn btn-outline-primary">View Exchange Rates (JSON)</a>
+            <a asp-controller="Home" asp-action="Rates" class="btn btn-outline-primary">Exchange Rates &amp; Converter</a>
+            <a href="/api/Currency/GetRates" class="btn btn-outline-secondary ms-2">View Raw JSON (API)</a>
         </p>
     </div>
 </div>

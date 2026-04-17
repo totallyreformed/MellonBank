@@ -1,0 +1,155 @@
+﻿@model MellonBank.Areas.Identity.Data.Currency
+
+@{
+    ViewData["Title"] = "Exchange Rates";
+}
+
+<h1>Exchange Rates &amp; Converter</h1>
+<p class="text-muted">Live rates from the MellonBank Currency API (stored in database).</p>
+
+@if (Model != null)
+{
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">EUR &rarr; AUD</h5>
+                    <p class="card-text fs-4">@Model.AUD</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">EUR &rarr; CHF</h5>
+                    <p class="card-text fs-4">@Model.CHF</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">EUR &rarr; GBP</h5>
+                    <p class="card-text fs-4">@Model.GBP</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">EUR &rarr; USD</h5>
+                    <p class="card-text fs-4">@Model.USD</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Currency Converter</h5>
+            <p class="text-muted">Write an amount in any field. The rest will update automatically.</p>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">EUR</label>
+                    <input type="number" id="eurInput" class="form-control" step="0.01" min="0" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">AUD</label>
+                    <input type="number" id="audInput" class="form-control" step="0.01" min="0" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">CHF</label>
+                    <input type="number" id="chfInput" class="form-control" step="0.01" min="0" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">GBP</label>
+                    <input type="number" id="gbpInput" class="form-control" step="0.01" min="0" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">USD</label>
+                    <input type="number" id="usdInput" class="form-control" step="0.01" min="0" />
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="clearAll()">Clear</button>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <strong>Base Currency: EUR</strong> | Retrieved At (UTC): @DateTime.UtcNow.ToString("o")
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <p>Exchange rate data is not available at this time.</p>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        var rates = {
+            AUD: @Model.AUD,
+            CHF: @Model.CHF,
+            GBP: @Model.GBP,
+            USD: @Model.USD
+        };
+
+        var eurInput = document.getElementById('eurInput');
+        var audInput = document.getElementById('audInput');
+        var chfInput = document.getElementById('chfInput');
+        var gbpInput = document.getElementById('gbpInput');
+        var usdInput = document.getElementById('usdInput');
+
+        function updateFromEur(eurValue) {
+            audInput.value = (eurValue * rates.AUD).toFixed(2);
+            chfInput.value = (eurValue * rates.CHF).toFixed(2);
+            gbpInput.value = (eurValue * rates.GBP).toFixed(2);
+            usdInput.value = (eurValue * rates.USD).toFixed(2);
+        }
+
+        function updateFromCurrency(value, rate) {
+            var eurValue = value / rate;
+            eurInput.value = eurValue.toFixed(2);
+            updateFromEur(eurValue);
+        }
+
+        eurInput.addEventListener('input', function () {
+            var val = parseFloat(this.value) || 0;
+            updateFromEur(val);
+        });
+
+        audInput.addEventListener('input', function () {
+            var val = parseFloat(this.value) || 0;
+            updateFromCurrency(val, rates.AUD);
+            audInput.value = this.value;
+        });
+
+        chfInput.addEventListener('input', function () {
+            var val = parseFloat(this.value) || 0;
+            updateFromCurrency(val, rates.CHF);
+            chfInput.value = this.value;
+        });
+
+        gbpInput.addEventListener('input', function () {
+            var val = parseFloat(this.value) || 0;
+            updateFromCurrency(val, rates.GBP);
+            gbpInput.value = this.value;
+        });
+
+        usdInput.addEventListener('input', function () {
+            var val = parseFloat(this.value) || 0;
+            updateFromCurrency(val, rates.USD);
+            usdInput.value = this.value;
+        });
+
+        function clearAll() {
+            eurInput.value = '';
+            audInput.value = '';
+            chfInput.value = '';
+            gbpInput.value = '';
+            usdInput.value = '';
+        }
+    </script>
+}

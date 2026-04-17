@@ -1,11 +1,20 @@
+using MellonBank.Areas.Identity.Data;
 using MellonBank.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace MellonBank.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly AppDBContext _context;
+
+        public HomeController(AppDBContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -14,6 +23,12 @@ namespace MellonBank.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Rates()
+        {
+            var currency = await _context.Currencies.FirstOrDefaultAsync();
+            return View(currency);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
